@@ -10,10 +10,23 @@ Built with **Next.js 16 (App Router) · React 19 · TypeScript · Tailwind v4 ·
 
 ## Screenshots
 
-> Drop captured images into [`assets/`](assets) and reference them here. Recommended:
-> - `assets/hero.png` — 3D isometric of a shed on contoured ground with the control panel
-> - `assets/contours.png` — the ground-contour grid editor
-> - `assets/checks.png` — the validation panel with auto-fixes
+### The configurator
+
+A parametric split-level shed on contoured ground, with the live 3D model and the control panel side by side. Orbit, pan and pinch on touch; switch views, split the slab, and read internal heights and the step level as you go.
+
+![Shed Builder — 3D isometric of a split-level shed on sloping ground alongside the control panel](assets/hero.png)
+
+### Ground contours
+
+Set the natural ground level (RL) at each node of an editable grid pinned to the footprint — height-tinted for readability and interpolated between points, so the land can fall toward any corner, not just end-to-end. Add rows or columns for finer control along an edge.
+
+![The ground-contour grid editor — height-tinted spot levels with front/back/left/right labels and a level stepper](assets/contours.png)
+
+### Live checks
+
+A validation engine surfaces clashes, code issues and earthworks notes as you design — bay and end-post clashes, headroom, NCC ceiling and stair rules, retained-height and Class 1a warnings — each with a one-tap fix.
+
+![The checks panel — errors, warnings and notes, each with a one-tap fix](assets/checks.png)
 
 ---
 

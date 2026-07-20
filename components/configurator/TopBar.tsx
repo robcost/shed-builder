@@ -2,11 +2,12 @@
 
 /** Top bar: title, design summary, the designs menu and the panel toggle. */
 import { useRef, useState } from "react";
-import { FolderOpen, PanelRightOpen, Plus, RotateCcw, Save, Trash2, Upload } from "lucide-react";
+import { FolderOpen, PanelRightOpen, Plus, RotateCcw, Save, Share2, Trash2, Upload } from "lucide-react";
 import { toast } from "sonner";
 import { ShedMark } from "@/components/configurator/ShedMark";
 import { useShedConfig } from "@/hooks/useShedConfig";
 import { bayOf, backInternal, dropOf } from "@/lib/shed/geometry";
+import { buildShareUrl } from "@/lib/shed/share";
 import { parseConfig } from "@/lib/shed/storage";
 
 export function TopBar({ onOpenPanel, panelOpen }: { onOpenPanel: () => void; panelOpen: boolean }) {
@@ -28,6 +29,16 @@ export function TopBar({ onOpenPanel, panelOpen }: { onOpenPanel: () => void; pa
     saveCurrentAs(n);
     setName("");
     toast.success(`Saved “${n}”`);
+  };
+
+  const doShare = async () => {
+    const url = buildShareUrl(cfg);
+    try {
+      await navigator.clipboard.writeText(url);
+      toast.success("Share link copied to clipboard");
+    } catch {
+      toast.error("Couldn't copy the link");
+    }
   };
 
   const doImport = (file: File) => {
@@ -101,6 +112,13 @@ export function TopBar({ onOpenPanel, panelOpen }: { onOpenPanel: () => void; pa
                     </button>
                   </div>
                 </div>
+                <button
+                  type="button"
+                  onClick={doShare}
+                  className="flex w-full items-center justify-center gap-1.5 border-b border-border/60 px-2.5 py-2 text-[12px] font-medium text-foreground/80 transition hover:bg-muted"
+                >
+                  <Share2 className="size-3.5" /> Copy share link
+                </button>
                 <div className="max-h-64 overflow-y-auto">
                   {designs.length === 0 && <p className="px-3 py-4 text-center text-[12px] text-muted-foreground">No saved designs yet.</p>}
                   {designs.map((d) => (

@@ -15,8 +15,10 @@ import {
   useRef,
   useState,
 } from "react";
+import { toast } from "sonner";
 import { DEFAULTS, ELEMENTS, OPENING_PRESETS } from "@/lib/shed/constants";
 import { snapToBay, validate } from "@/lib/shed/validation";
+import { clearShareHash, readSharedConfig } from "@/lib/shed/share";
 import {
   deleteDesign as storageDelete,
   listDesigns,
@@ -105,6 +107,22 @@ export function ShedConfigProvider({ children }: { children: React.ReactNode }) 
   // disabled here deliberately.
   /* eslint-disable react-hooks/set-state-in-effect */
   useEffect(() => {
+    // Run exactly once. Guard against React Strict Mode's double-invoke, which
+    // would otherwise re-run after a shared link cleared the hash and reload the
+    // autosave over the just-loaded shared design.
+    if (hydrated.current) return;
+    // A shared link (#d=…) takes precedence over the local autosave: load it as
+    // the working design and clear the fragment so edits/refresh don't reset it.
+    const shared = readSharedConfig();
+    if (shared) {
+      setCfgState(shared);
+      nextId.current = Math.max(100, ...shared.openings.map((o) => o.id + 1));
+      clearShareHash();
+      setDesigns(listDesigns());
+      hydrated.current = true;
+      toast.success("Opened a shared design");
+      return;
+    }
     const saved = loadCurrent();
     if (saved) {
       setCfgState(saved);
